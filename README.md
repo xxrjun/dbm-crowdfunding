@@ -1,4 +1,10 @@
-# 110-2 DBM Final Project Crowdfunding
+# 110-2 DBM Final Project Crowdfunding Platform
+
+This is for NCU 110-2 Database Management Final Project - Crowdfunding Platform.
+
+Using MySQL Workbench (8.0.29) and MySQL Server (8.0.29).
+
+Thanks for Teachers and TAs in this course.
 
 ## My Info
 
