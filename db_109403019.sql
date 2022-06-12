@@ -25,9 +25,10 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
-  `id` int DEFAULT NULL,
-  `category_name` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `category_name` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,13 +49,14 @@ DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comment` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `proposal_id` int DEFAULT NULL,
   `member_id` int DEFAULT NULL,
   `user_comment` text,
   `proposer_response` text,
-  `comment_time` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `comment_time` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,13 +77,14 @@ DROP TABLE IF EXISTS `faq`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `faq` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `proposal_id` int DEFAULT NULL,
   `last_editor_id` int DEFAULT NULL,
   `question` text,
   `answer` text,
-  `updated_at` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `updated_at` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,10 +105,11 @@ DROP TABLE IF EXISTS `followingrecord`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `followingrecord` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `proposal_id` int DEFAULT NULL,
-  `member_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `member_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,13 +130,14 @@ DROP TABLE IF EXISTS `member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member` (
-  `member_id` int DEFAULT NULL,
+  `member_id` int NOT NULL AUTO_INCREMENT,
   `name` text,
   `phone` text,
   `email` text,
   `salt` text,
-  `address` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `address` text,
+  PRIMARY KEY (`member_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,10 +158,11 @@ DROP TABLE IF EXISTS `membercredential`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `membercredential` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `hashed_user_id` int DEFAULT NULL,
-  `hashed_pwd_string` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `hashed_pwd_string` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +183,7 @@ DROP TABLE IF EXISTS `proposal`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `proposal` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `category_id` int DEFAULT NULL,
   `title` text,
   `content` text,
@@ -187,8 +193,9 @@ CREATE TABLE `proposal` (
   `viewed_num` int DEFAULT NULL,
   `create_date` text,
   `due_date` text,
-  `is_deactivated` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `is_deactivated` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,10 +216,11 @@ DROP TABLE IF EXISTS `proposalmember`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `proposalmember` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `proposal_id` int DEFAULT NULL,
-  `member_id` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `member_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,12 +241,13 @@ DROP TABLE IF EXISTS `proposaloption`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `proposaloption` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `proposal_id` int DEFAULT NULL,
   `title` text,
   `price` int DEFAULT NULL,
-  `description` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `description` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -259,11 +268,12 @@ DROP TABLE IF EXISTS `sponsorrecord`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sponsorrecord` (
-  `id` int DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `member_id` int DEFAULT NULL,
   `proposal_option_id` int DEFAULT NULL,
-  `amount` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `amount` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,6 +308,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_CreateProposal`(
     OUT out_affected_row_num int
 )
 BEGIN
+	-- Declare a variable to store affected_row_num
+	DECLARE temp INT DEFAULT 0;
+
 	-- Check whether the input member exists in our member table
 	IF EXISTS (SELECT member_id FROM member
 				WHERE member_id = in_member_id)
@@ -310,12 +323,16 @@ BEGIN
 			INSERT INTO proposal (category_id, title, content, amount, goal, status, viewed_num, create_date, due_date, is_deactivated)
 			VALUES (in_category_id, in_title, in_content, 0, in_goal, 1, 0, NOW(), NULL, 0);
 			
-
+			-- update affected_row_num
+			SELECT ROW_COUNT() INTO temp;
             
 			-- Insert new data into proposalmember table
 			INSERT INTO proposalmember(proposal_id, member_id)
 			VALUES ((SELECT MAX(id) FROM proposal), in_member_id);
 			
+            -- update affected_row_num
+			SELECT ROW_COUNT() + temp INTO temp;
+            
 			-- Show result
 			SELECT pp.id as proposal_id, pp.title as proposal_title, 
 					pp.content as proposal_content, pp.amount, pp.goal,
@@ -327,17 +344,12 @@ BEGIN
 				category catg ON pp.category_id = catg.id
 			ORDER BY pp.id DESC
             LIMIT 1;
-			
-			-- Get affected_row_num
-			SELECT  found_rows() INTO out_affected_row_num;
-		ELSE
-			-- Get 0 affected_row_num
-			SELECT 0 INTO out_affected_row_num;
+
 		END IF;
-	ELSE
-		-- Get 0 affected_row_num
-		SELECT 0 INTO out_affected_row_num;
     END IF;
+    
+     -- put temp to out_affected_row_num
+	SELECT temp INTO out_affected_row_num;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -547,8 +559,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Login`(
     OUT status_code INT
 )
 BEGIN
-	-- Check whether the input email is exists and the hashed_pwd_string
-    -- is correct
+	-- Check whether the input email is exists and the hashed_pwd_string is correct
 	IF EXISTS (SELECT email, hashed_pwd_string FROM member 
     JOIN membercredential mc ON member_id = mc.id
     WHERE email = in_email AND hashed_pwd_string = in_hashedpwd)
@@ -592,10 +603,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_RegisterMember`(
     OUT out_affected_row_num int
 )
 BEGIN
+	DECLARE temp INT DEFAULT 0;
+    
 	IF NOT EXISTS(SELECT email FROM member WHERE email = in_email)
 	THEN
 		INSERT INTO member(name, phone, email, salt, address)
         VALUES (in_name, in_phone, in_email, in_salt, in_address);
+        
+        SELECT ROW_COUNT() INTO temp;
+        
         INSERT INTO membercredential(
 			id,
 			hashed_user_id,
@@ -610,6 +626,8 @@ BEGIN
         WHERE
 			email = in_email;
             
+		SELECT ROW_COUNT() + temp INTO temp;
+            
 		SELECT m.member_id, m.name, m.email, mc.hashed_pwd_string as password,
 				m.salt, m.phone, m.address
 		FROM
@@ -617,12 +635,10 @@ BEGIN
 		JOIN
 			membercredential mc ON m.member_id = mc.hashed_user_id
 		WHERE m.email = in_email;
-        
-          -- Get affected_row_num
-		SELECT FOUND_ROWS() INTO out_affected_row_num;
-	ELSE
-		SELECT 0 INTO out_affected_row_num;
 	END IF;
+    
+	-- Get affected_row_num
+	SELECT temp INTO out_affected_row_num;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -645,6 +661,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_UpdateProposalStatus`(
     OUT out_affected_row_num int
 )
 BEGIN
+	-- Declare a variable to store affected_row_num
+	DECLARE temp INT DEFAULT 0;
     
     IF (in_status <= 3 AND in_status >= 1) 
     THEN
@@ -653,20 +671,22 @@ BEGIN
 			status = in_status,
             due_date = IF(in_status = 2, DATE_ADD(create_date, INTERVAL +90 DAY), due_date)
 		WHERE id = in_proposal_id AND status = in_status - 1;
+			
+		-- update affected_row_num
+		SELECT ROW_COUNT() INTO temp;
         
-        IF FOUND_ROWS() != 0
+        -- show result if the change is valid
+        IF ROW_COUNT() > 0
         THEN
 			SELECT id as proposal_id, status
 			FROM
 				proposal
 			WHERE id = in_proposal_id;
 		END IF;
-        -- Get affected_row_num
-		SELECT FOUND_ROWS() INTO out_affected_row_num;
-	ELSE
-		-- Get 0 affected_row_num
-		SELECT 0 INTO out_affected_row_num;
 	END IF;
+    
+    -- put temp to out_affected_row_num
+	SELECT temp INTO out_affected_row_num;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -690,6 +710,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_UpdatePwd`(
     OUT out_affected_row_num int
 )
 BEGIN
+	-- Declare a variable to store affected_row_num
+	DECLARE temp INT DEFAULT 0;
+    
 	-- check whether the salt and the password is same as before
     IF NOT EXISTS(SELECT * FROM member
 			JOIN membercredential ON hashed_user_id = member_id
@@ -704,6 +727,9 @@ BEGIN
 			salt = in_salt
 		WHERE
 			member_id = in_member_id;
+            
+		-- update affected_row_num
+		SELECT ROW_COUNT() INTO temp;
 
 		-- update hashed password in membercredential
 		UPDATE
@@ -712,27 +738,25 @@ BEGIN
 			hashed_pwd_string = in_hashedPwd
 		WHERE
 			hashed_user_id = in_member_id;
+            
+		-- update affected_row_num
+		SELECT ROW_COUNT() + temp INTO temp;
 		END IF;
 
-		-- show affect rows if the update is valid
+		-- show result if the update is valid
 		IF ROW_COUNT() > 0
 		THEN
 		SELECT member_id, name, email, hashed_pwd_string as password, 
-		salt, phone, address
+				salt, phone, address
 		FROM member
 		JOIN membercredential mc ON member_id = mc.hashed_user_id
 		WHERE 
 			member_id = in_member_id
 		LIMIT 1;
-        
-        -- Get affected_row_num
-		SELECT FOUND_ROWS() INTO out_affected_row_num;
-	ELSE
-		-- Get affected_row_num
-		SELECT 0 INTO out_affected_row_num;
 	END IF;
-	
-	
+    
+    -- put temp to out_affected_row_num
+	SELECT temp INTO out_affected_row_num;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -749,4 +773,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-11 21:48:31
+-- Dump completed on 2022-06-12 14:37:20
