@@ -115,10 +115,11 @@ Thanks for Teachers and TAs in this course.
 
   1. `DECLARE` 一個用來輸出的 status_code (int)，預設值設為 0。
   2. 使用 `IF EXISTS` 檢查 in_email 使否存在以及 in_hashedpwd 是否與該 member 的
-     hashed_pwd_string 相同。
-  3. 若條件成立，則 `SET` status_code 為 1，也就是登入成功。
-  4. 若 in_email 存在可是 in_hashedpwd 不正確，則 `SET` status_code 為 2。
-  5. 如果前兩者條件皆不成立， `SET` status_code 為 3。
+     hashed_pwd_string 相同。若存在則執行下
+  3. 也要檢查
+  4. 若條件成立，則 `SET` status_code 為 1，也就是登入成功。
+  5. 若 in_email 存在可是 in_hashedpwd 不正確，則 `SET` status_code 為 2。
+  6. 如果前兩者條件皆不成立， `SET` status_code 為 3。
 
 - **Demo:**
 
@@ -325,8 +326,16 @@ Thanks for Teachers and TAs in this course.
 
 - **Purpose:** 輸入 member_id 以終止其會員服務。
 
-- **Idea:** 於 member table 中將該名會員資料作去識別化(將 name, phone, salt,
-  address 皆設為 FF-FF-FF-FF)，並且使被去識別化的資料無法作登入。
+- **Idea:**
+
+  1. 於 member table 中將該名會員資料作去識別化。
+  2. (a)將 name 設為 "USER_DELETED"  
+     (b)email 設為 "deletedUser\_\_@@\_member_id"  
+     (c)留下 phone 以方便後續糾紛追蹤使用者(電話號碼相對電子郵件難做到免洗)  
+     (d)清空 salt  
+     (e)address 設為刪除時的時間。
+  3. 更新 membercredential table，將會員之 hashed_pwd_string 清空。
+  4. 使被去識別化的會員無法作登入，需於 sp_Login 加入檢查。
 
 - **Input**: member_id (int)
 
@@ -334,10 +343,22 @@ Thanks for Teachers and TAs in this course.
 
 - **Tables:**
 
-  - sponsorrecord: ()
-  - proposal: id, title, status, view_num
+  - member
+  - membercredential
 
 - **Implementation:**
+
+  1. `DECLARE` temp 用以儲存變動的列數。
+  2. 使用 `IF EXISTS` 檢查 in_member_id 是否存在於 member table 中。若存在則執行
+     以下步驟。
+  3. 使用 `UPDATE ... SET` 去更新該使用者的資料。並搭配 `ROW_COUNT()` 更新 temp
+     (更動到的列數)。
+  4. 如果更動到的列數大於 0，代表成功使該會員停權，將其於 membercredential table
+     中的 hashed_pwd_string 清空。
+  5. 把刪除的 user 資料列印出來。
+
+- **Demo:**
+  <img src="./sp_demo/12_sp_DeleteMember.png" alt="12_sp_DeleteMember" width="800px"/>
 
 ## 使用資料
 
