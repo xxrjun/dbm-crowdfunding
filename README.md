@@ -8,11 +8,15 @@ Thanks for Teachers and TAs in this course.
 
 ## My Info
 
+---
+
 - 姓名: 鄒翔宇
 - 學號: 109403019
 - 系級: 資管二 A
 
 ## Stored Procedure
+
+---
 
 **主要部分:**
 
@@ -114,12 +118,13 @@ Thanks for Teachers and TAs in this course.
 - **Imeplmentation:**
 
   1. `DECLARE` 一個用來輸出的 status_code (int)，預設值設為 0。
-  2. 使用 `IF EXISTS` 檢查 in_email 使否存在以及 in_hashedpwd 是否與該 member 的
-     hashed_pwd_string 相同。若存在則執行下
-  3. 也要檢查
-  4. 若條件成立，則 `SET` status_code 為 1，也就是登入成功。
-  5. 若 in_email 存在可是 in_hashedpwd 不正確，則 `SET` status_code 為 2。
-  6. 如果前兩者條件皆不成立， `SET` status_code 為 3。
+  2. 使用 `IF EXISTS` 檢查 in_email 是否存在，若不存在 `SET` status_code 為 3。
+     若存在執行以下。
+  3. 檢查使用者登入的 email 是否為已刪除帳號，若是，`SET` status_code 為 3。若不
+     是則執行以下，
+  4. 如果使用者登入的 email 以及 hashed_pwd 正確則 `SET` status_code 為 1。
+  5. 如果使用者登入的 email 正確但 hashed_pwd 錯誤則 `SET` status_code 為 2。
+  6. 其餘狀況皆 `SET` status_code 為 3。
 
 - **Demo:**
 
@@ -299,14 +304,16 @@ Thanks for Teachers and TAs in this course.
 
 - **Idea:**
 
-  1. 若 in_member_id 存在且贊助過提案，先透過 sponsorrecord table 與
+  1. 因為推薦內容功能經常被使用到，因此選擇創建一個 local temp table，只有中斷連
+     線才會自動刪除此表格。
+  2. 若 in_member_id 存在且贊助過提案，先透過 sponsorrecord table 與
      proposaloption table 找到 in_member_id 贊助過的提案，會得到一至多個
      proposal_id (不要重複) 並保存。
-  2. 透過 sponsorrecord table 與 proposaloption table 搭配 proposal_id 查找有哪
+  3. 透過 sponsorrecord table 與 proposaloption table 搭配 proposal_id 查找有哪
      些人也贊助過會得到一至多個 member_id (不要重複)。
-  3. 透過 proposal table 搭配先前保存 in_member_id 贊助過專案的 proposal_id，查
+  4. 透過 proposal table 搭配先前保存 in_member_id 贊助過專案的 proposal_id，查
      找哪些專案沒贊助過。
-  4. 將所有符合條件 1 與 條件 2 之提案作進一步篩選。提案狀態 status 須為 2，並透
+  5. 將所有符合條件 1 與 條件 2 之提案作進一步篩選。提案狀態 status 須為 2，並透
      過 proposalmember 篩選 in_member_id 不為提案人的資料。
 
 - **Implementation:**
