@@ -329,11 +329,11 @@ Thanks for Teachers and TAs in this course.
 - **Idea:**
 
   1. 於 member table 中將該名會員資料作去識別化。
-  2. (a)將 name 設為 `USER_DELETED`  
-     (b)email 設為 `deletedUser\_\_@@\_member_id`  
-     (c)留下 phone 以方便後續糾紛追蹤使用者(電話號碼相對電子郵件難做到免洗)  
-     (d)清空 salt  
-     (e)address 設為刪除時的時間。
+  2. (a) 將 name 設為 `USER_DELETED`  
+     (b) email 設為 `deletedUser\_\_@@\_member_id`  
+     (c) 留下 phone 以方便後續糾紛追蹤使用者(電話號碼相對電子郵件難做到免洗)  
+     (d) 清空 salt  
+     (e) address 設為刪除時的時間。
   3. 更新 membercredential table，將會員之 hashed_pwd_string 清空。
   4. 使被去識別化的會員無法作登入，需於 sp_Login 加入檢查。
 
