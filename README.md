@@ -282,12 +282,12 @@ Thanks for Teachers and TAs in this course.
 
 - **Recommended conditions:**
 
-  - 和 member_id 贊助相同提案的人也贊助過的提案 (看 sponsorrecord table JOIN
-    proposaloption table)
-  - 為 member_id 不曾贊助過的提案 (看 sponsorrecord table JOIN proposaloption
-    table)
-  - 提案狀態必須是 2 (status = 2) (看 proposal table)
-  - 推薦內容不可以是自己的提案 (看 proposalmember table)
+  1. 和 member_id 贊助相同提案的人也贊助過的提案 (看 sponsorrecord table JOIN
+     proposaloption table)
+  2. 為 member_id 不曾贊助過的提案 (看 sponsorrecord table JOIN proposaloption
+     table)
+  3. 提案狀態必須是 2 (status = 2) (看 proposal table)
+  4. 推薦內容不可以是自己的提案 (看 proposalmember table)
 
 - **Tables:**
 
@@ -295,6 +295,18 @@ Thanks for Teachers and TAs in this course.
   - proposaloption: (proposal_id)
   - proposal: id, title, status, view_num
   - proposalmember: (member_id, proposal_id)
+
+- **Idea:**
+
+  1. 若 in_member_id 存在且贊助過提案，先透過 sponsorrecord table 與
+     proposaloption table 找到 in_member_id 贊助過的提案，會得到一至多個
+     proposal_id (不要重複) 並保存。
+  2. 透過 sponsorrecord table 與 proposaloption table 搭配 proposal_id 查找有哪
+     些人也贊助過會得到一至多個 member_id (不要重複)。
+  3. 透過 proposal table 搭配先前保存 in_member_id 贊助過專案的 proposal_id，查
+     找哪些專案沒贊助過。
+  4. 將所有符合條件 1 與 條件 2 之提案作進一步篩選。提案狀態 status 須為 2，並透
+     過 proposalmember 篩選 in_member_id 不為提案人的資料。
 
 - **Implementation:**
   1. 先使用 `IF NOT EXISTS` 檢查 in_member_id 是否存在於 member table 中，若存在
