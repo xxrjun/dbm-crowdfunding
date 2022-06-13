@@ -8,15 +8,11 @@ Thanks for Teachers and TAs in this course.
 
 ## My Info
 
----
-
 - 姓名: 鄒翔宇
 - 學號: 109403019
 - 系級: 資管二 A
 
 ## Stored Procedure
-
----
 
 **主要部分:**
 
