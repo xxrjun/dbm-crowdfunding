@@ -46,8 +46,7 @@ Thanks for Teachers and TAs in this course.
 
 - **Purpose:** 註冊使用者，並於成功註冊後列出新增會員的所有欄位。
 
-- **Input:** in_member_id (int), in_hashedPwd (varchar(200)), in_salt (char(64)), name (varchar(64)), 
-             address (varchar(255)), phone (varchar(64))
+- **Input:** in_member_id (int), in_hashedPwd (varchar(200)), in_salt (char(64)), name (varchar(64)), address (varchar(255)), phone (varchar(64))
 
 - **Output:** affected_row_num (int)
 
@@ -57,14 +56,10 @@ Thanks for Teachers and TAs in this course.
 
   1. 需將 member table 的 member_id 設為 Auto Increment。
   2. `DECLARE` temp 作為更動到的列數之變數，預設為 0。
-  3. 使用 `EXISTS` 語法檢查 in_email 是否已存在於 tblmember 中。
-     因為 email 必須唯一，因此不可以用重複的 email 註冊。若已經存在則不執行以下動作。
-  4. 若尚未存在，則使用 `INSERT INTO ... VALUES` 將資料放入 tblmember 中。
-     並搭配 `SELECT ROW_COUNT() INTO temp` 更新更動到的列數。
-  5. 使用 `INSERT INTO ... SELECT` 語法將新建使用者 credential 的資料此筆資料加入至 tblmembercredential 中。
-     並搭配　`SELECT ROW_COUNT() + temp INTO temp` 更新更動到的列數。
-  6. 將指定的表格呈現出來，使用 `SELECT` tblmember 與 tblmembercredential `JOIN` 後的資料，
-     使用 member_id 作為 `ON` 的匹配條件，email = in_email 為 `WHERE` 之條件。
+  3. 使用 `EXISTS` 語法檢查 in_email 是否已存在於 tblmember 中。因為 email 必須唯一，因此不可以用重複的 email 註冊。若已經存在則不執行以下動作。
+  4. 若尚未存在，則使用 `INSERT INTO ... VALUES` 將資料放入 tblmember 中。並搭配 `SELECT ROW_COUNT() INTO temp` 更新更動到的列數。
+  5. 使用 `INSERT INTO ... SELECT` 語法將新建使用者 credential 的資料此筆資料加入至 tblmembercredential 中。並搭配　`SELECT ROW_COUNT() + temp INTO temp` 更新更動到的列數。
+  6. 將指定的表格呈現出來，使用 `SELECT` tblmember 與 tblmembercredential `JOIN` 後的資料，使用 member_id 作為 `ON` 的匹配條件，email = in_email 為 `WHERE` 之條件。
   7. 最後將 temp 數值丟進要輸出的 affected_row_num。
 
 - **Demo:**
@@ -84,10 +79,8 @@ Thanks for Teachers and TAs in this course.
 - **Imeplmentation:**
 
   1. `DECLARE` temp 作為更動到的列數之變數，預設為 0。
-  2. 使用 `IF NOT EIXSTS` 檢查輸入 member_id 之 salt 與 hashed_pwd_string 是否與輸入的值皆不同 (因為規定兩者皆需要更新)。
-     這部分要將 tblmember 與 tblmembercredential 以 member_id 作 `JOIN`。
-  3. 若確認 salt 與 hashed_pwd_string 皆一定會被更新，使用 `UPDATE ... SET` 語法更新 tblmember 中的 salt 
-     以及 tblmembercredential 中的 hashed_pwd_string。並搭配 `ROW_COUNT()` 更新 temp (更動到的列數)。
+  2. 使用 `IF NOT EIXSTS` 檢查輸入 member_id 之 salt 與 hashed_pwd_string 是否與輸入的值皆不同 (因為規定兩者皆需要更新)。這部分要將 tblmember 與 tblmembercredential 以 member_id 作 `JOIN`。
+  3. 若確認 salt 與 hashed_pwd_string 皆一定會被更新，使用 `UPDATE ... SET` 語法更新 tblmember 中的 salt 以及 tblmembercredential 中的 hashed_pwd_string。並搭配 `ROW_COUNT()` 更新 temp (更動到的列數)。
   4. 使用 `ROW_COUNT` 搭配 `IF` 條件式檢查是否有更新到資料，若大於 0 代表有更新到資料。
   5. 確認有更新到資料的話，用 `SELECT` 將該用戶更新後的 result 印出來。
   6. 將 temp 數值丟進要輸出的 affected_row_num。
@@ -130,8 +123,7 @@ Thanks for Teachers and TAs in this course.
 
 - **Implementation:**
 
-  1. 使用 `SELECT` 搭配 `LIKE` 作關鍵字搜尋 (預設不分大小寫)。
-     後方 pattern 使用 `CONCAT` 串接 `('%', in_keyword, '%')`。
+  1. 使用 `SELECT` 搭配 `LIKE` 作關鍵字搜尋 (預設不分大小寫)。後方 pattern 使用 `CONCAT` 串接 `('%', in_keyword, '%')`。
 
 - **Demo:**
 
@@ -151,12 +143,9 @@ Thanks for Teachers and TAs in this course.
 
   1. `DECLARE` temp 作為更動到的列數之變數，預設為 0。
   2. 檢查 in_status 是不是在合理範圍內 (1~3)，若在合理範圍內則執行以下步驟。
-  3. 使用 `UPDATE ... SET` 更新 tblproposal 內的資料，以 proposal_id = in_proposal_id 作為 `WHERE` 的匹配條件。
-     並且原 status 必須比 in_status 少 1 (更新順序只能遵循 1 → 2 → 3)。
+  3. 使用 `UPDATE ... SET` 更新 tblproposal 內的資料，以 proposal_id = in_proposal_id 作為 `WHERE` 的匹配條件。並且原 status 必須比 in_status 少 1 (更新順序只能遵循 1 → 2 → 3)。
   4. 延續上個步驟，將 status 更新為 in_status。
-  5. 並利用 `IF(condition, true_value, false_value)` 有條件的更新 due_date，
-     只有在 in_status = 2 時，必須將當下時間 + 90 天 設為 due_date。
-     這邊利用 `DATE_ADD(NOW(), INTERVAL value addunit)` 回傳相加過後的日期。
+  5. 並利用 `IF(condition, true_value, false_value)` 有條件的更新 due_date，只有在 in_status = 2 時，必須將當下時間 + 90 天 設為 due_date。這邊利用 `DATE_ADD(NOW(), INTERVAL value addunit)` 回傳相加過後的日期。
   6. 檢查達標率 (amount/goal) 是否大於 0.9，若大於一樣使用 `DATE_ADD()` 將截止時間加長 30 天。
   7. 搭配 `ROW_COUNT()` 更新 temp (更動到的列數)。
   8. 使用 `IF ROWCOUNT() > 0` 檢查該指定資料列是否有被更新，若有則用 `SELECT` 將我們要的資料列印出來。
@@ -218,8 +207,7 @@ Thanks for Teachers and TAs in this course.
 
 - **Implementation:**
 
-  1. 從 tblproposal 中 `SELECT` 要列印出的資料，ratio 以 `amount / goal` 作計算。
-     `WHERE` 之條件為 amount / goal 大於等於 in_ratio。
+  1. 從 tblproposal 中 `SELECT` 要列印出的資料，ratio 以 `amount / goal` 作計算。 `WHERE` 之條件為 amount / goal 大於等於 in_ratio。
   2. 使用 `ORDER BY amount /goal DESC` 作降冪排序列印資料。
   3. 將 `FOUND_ROWS()` 數值丟進要輸出的 number_of_rows_in_the_result_set。
 
@@ -249,8 +237,7 @@ Thanks for Teachers and TAs in this course.
 
 ### 11. sp_GetRecommendedProposals [DONE]
 
-- **Purpose:** 輸入會員 ID (member_id) 獲取推薦的提案 (proposal)。列出點擊率 (viewed_num) 最高的前五名。
-               若不符合推薦內容篩選標準則單純按照點擊率列出。
+- **Purpose:** 輸入會員 ID (member_id) 獲取推薦的提案 (proposal)。列出點擊率 (viewed_num) 最高的前五名。 若不符合推薦內容篩選標準則單純按照點擊率列出。
 
 - **Input**: member_id (int)
 
@@ -293,10 +280,7 @@ Thanks for Teachers and TAs in this course.
 
 - **Report:**
 
-  這題應該算是魔王題，花了幾個小時的時間思考以及除錯，各種表的交叉以及條件設定。
-  本來還在想要用 temp table 來存放 sponsorrecord 與 proposaloption 合併後的紀錄
-  ，不過 temp table 一次呼叫只能 select 一次，因此後來就是全部都 JOIN 在一起去處理。
-  這邊放兩張照片來壓壓驚
+  這題應該算是魔王題，花了幾個小時的時間思考以及除錯，各種表的交叉以及條件設定。本來還在想要用 temp table 來存放 sponsorrecord 與 proposaloption 合併後的紀錄，不過 temp table 一次呼叫只能 select 一次，因此後來就是全部都 JOIN 在一起去處理。這邊放兩張照片來壓壓驚
 
   - 多多多多多層選取
 
