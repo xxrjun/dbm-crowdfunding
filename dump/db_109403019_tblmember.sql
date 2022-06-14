@@ -31,7 +31,8 @@ CREATE TABLE `tblmember` (
   `email` varchar(64) NOT NULL,
   `salt` char(64) NOT NULL,
   `address` varchar(255) NOT NULL,
-  PRIMARY KEY (`member_id`)
+  PRIMARY KEY (`member_id`),
+  UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -54,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-14  3:17:55
+-- Dump completed on 2022-06-14 15:43:12

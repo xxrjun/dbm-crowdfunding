@@ -67,7 +67,7 @@ BEGIN
 			-- Show result
 			SELECT pp.proposal_id, pp.title as proposal_title, 
 					pp.content as proposal_content, pp.amount, pp.goal,
-					pp.status, pp.viewed_num, pp.create_time, pp.due_time,
+					pp.status, pp.viewed_num, pp.create_time as create_date, pp.due_time as due_date,
 					catg.category_name as category
 			FROM
 				tblproposal as pp
@@ -158,7 +158,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetFollowedProposalsByMember`(
 	IN in_member_id INT,
-    OUT outNumFound int
+    OUT number_of_rows_in_the_result_set int
 )
 BEGIN
 	SELECT fr.member_id, pp.title as proposal_title,
@@ -170,7 +170,7 @@ BEGIN
 	WHERE
 		member_id = in_member_id;
 	
-	SELECT FOUND_ROWS() INTO outNumFound;
+	SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -189,7 +189,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetHistorySponsorByMember`(
 	IN in_member_id INT,
-    OUT outNumFound int
+    OUT number_of_rows_in_the_result_set int
 )
 BEGIN
 	SELECT sr.member_id, ppo.proposal_id , 
@@ -204,7 +204,7 @@ BEGIN
 	WHERE
 		sr.member_id = in_member_id;
         
-	SELECT FOUND_ROWS() INTO outNumFound;
+	SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -223,7 +223,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetProposalByCompletionRate`(
 	IN in_ratio FLOAT,
-    OUT outNumFound int
+    OUT number_of_rows_in_the_result_set int
 )
 BEGIN
 	SELECT pp.proposal_id, title as proposal_title, amount, 
@@ -232,7 +232,7 @@ BEGIN
     WHERE amount / goal >= in_ratio
     ORDER BY amount / goal DESC;
     
-    SELECT FOUND_ROWS() INTO outNumFound;
+    SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -251,15 +251,15 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetProposalsByKeyword`(
 	IN in_keyword VARCHAR(64),
-    OUT outNumFound int
+    OUT number_of_rows_in_the_result_set int
 )
 BEGIN
 	SELECT proposal_id, title as proposal_title, 
-			due_time, amount
+			due_time as due_date, amount
     FROM tblproposal
     WHERE title LIKE CONCAT('%', in_keyword, '%');
     
-    SELECT FOUND_ROWS() INTO outNumFound;
+    SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -277,25 +277,91 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetRecommendedProposals`(
-	IN in_member_id INT
+	IN in_member_id INT,
+    OUT number_of_rows_in_the_result_set INT
 )
-BEGIN
-	IF in_member_id NOT IN (SELECT member_id FROM member)
+BEGIN    
+	IF NOT EXISTS (SELECT member_id FROM tblmember WHERE member_id = in_member_id)
     THEN
+		-- Not a member in our system, just recommend 5 most viewed proposals
 		SELECT proposal_id, title as proposal_title,
 				status, viewed_num
 		FROM
 			tblproposal
-		ORDER BY viewed_num
+		ORDER BY viewed_num DESC
         LIMIT 5;
+        
+        SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
 	ELSE
-		SELECT proposal_id, title as proposal_title,
-				status, viewed_num
-		FROM
-			tblproposal
-		ORDER BY viewed_num
-        LIMIT 5;
+		-- Recommend under certain conditions
+        -- ppm.member_id 是提案者 id ； sprc.member_id 是贊助者 id
+		IF EXISTS (
+			SELECT pp.proposal_id, pp.title as proposal_title, pp.status, pp.viewed_num
+			FROM
+				tblproposal pp
+			JOIN tblproposaloption ppo ON ppo.proposal_id = pp.proposal_id
+			JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+			JOIN tblproposalmember ppm ON ppm.proposal_id = pp.proposal_id
+			WHERE spr.member_id != in_member_id	-- b. input member 不曾贊助過的提案
+				AND pp.status = 2  					-- c. 提案狀態需為 2
+				AND ppm.member_id != in_member_id   -- d. 不可以是 input member 自己的提案
+				AND ppo.proposal_id IN  -- a. input member 不曾贊助以及贊助相同提案的人也贊助過的提案 (不重複)
+					(SELECT DISTINCT ppo.proposal_id	-- 其他贊助者也贊助過的相同的提案提案(不重複)
+						FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+						WHERE spr.member_id IN 	
+							(SELECT spr.member_id		-- 贊助相同提案的人
+								FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+								WHERE 
+									ppo.proposal_id IN	
+										(SELECT ppo.proposal_id		-- 贊助過 input member 贊助過的提案
+											FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+											WHERE spr.member_id = in_member_id)) 
+								AND ppo.proposal_id NOT IN		-- 且不是 input member 贊助過的提案
+										(SELECT ppo.proposal_id
+											FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+											WHERE spr.member_id = in_member_id)))
+		THEN
+			SELECT pp.proposal_id, pp.title as proposal_title, pp.status, pp.viewed_num
+			FROM
+				tblproposal pp
+			JOIN tblproposaloption ppo ON ppo.proposal_id = pp.proposal_id
+			JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+			JOIN tblproposalmember ppm ON ppm.proposal_id = pp.proposal_id
+			WHERE spr.member_id != in_member_id	-- b. input member 不曾贊助過的提案
+				AND pp.status = 2  					-- c. 提案狀態需為 2
+				AND ppm.member_id != in_member_id   -- d. 不可以是 input member 自己的提案
+				AND ppo.proposal_id IN  -- a. input member 不曾贊助以及贊助相同提案的人也贊助過的提案 (不重複)
+					(SELECT DISTINCT ppo.proposal_id	-- 其他贊助者也贊助過的相同的提案提案(不重複)
+						FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+						WHERE spr.member_id IN 	
+							(SELECT spr.member_id		-- 贊助相同提案的人
+								FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+								WHERE 
+									ppo.proposal_id IN	
+										(SELECT ppo.proposal_id		-- 贊助過 input member 贊助過的提案
+											FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+											WHERE spr.member_id = in_member_id)) 
+								AND ppo.proposal_id NOT IN		-- 且不是 input member 贊助過的提案
+										(SELECT ppo.proposal_id
+											FROM tblproposaloption ppo JOIN tblsponsorrecord spr ON spr.proposal_option_id = ppo.proposal_option_id
+											WHERE spr.member_id = in_member_id))
+			ORDER BY viewed_num DESC
+			LIMIT 5;
+            
+            SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
+		ELSE
+			-- Not suit for 4 certain condiftion
+				SELECT proposal_id, title as proposal_title,
+						status, viewed_num
+				FROM
+					tblproposal
+				ORDER BY viewed_num DESC
+				LIMIT 5;
+				
+				SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
+        END IF;
 	END IF;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -314,7 +380,7 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_GetUnrepliedComments`(
 	IN in_member_id INT,
-    OUT outNumFound int
+    OUT number_of_rows_in_the_result_set int
 )
 BEGIN
 	SELECT c.member_id, c.proposal_id, pp.title as proposal_title,
@@ -326,7 +392,7 @@ BEGIN
     WHERE c.member_id = in_member_id
     AND c.proposer_response = '' OR c.proposer_response IS NULL;
     
-	SELECT FOUND_ROWS() INTO outNumFound;
+	SELECT FOUND_ROWS() INTO number_of_rows_in_the_result_set;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -463,7 +529,8 @@ BEGIN
 		UPDATE tblproposal
 		SET 
 			status = in_status,
-            due_time = IF(in_status = 2, DATE_ADD(create_time, INTERVAL +90 DAY), due_time)
+            due_time = IF(in_status = 2, DATE_ADD(NOW(), INTERVAL +90 DAY), due_time),
+            due_time = IF(amount / goal > 0.9, DATE_ADD(due_time, INTERVAL + 30 DAY), due_time)
 		WHERE proposal_id = in_proposal_id AND status = in_status - 1;
 			
 		-- update affected_row_num
@@ -567,4 +634,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-14  3:17:56
+-- Dump completed on 2022-06-14 15:43:13

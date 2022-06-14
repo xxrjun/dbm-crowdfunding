@@ -26,19 +26,19 @@ DROP TABLE IF EXISTS `tblproposal`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tblproposal` (
   `proposal_id` int NOT NULL AUTO_INCREMENT,
-  `catecory_id` int NOT NULL,
+  `category_id` int NOT NULL,
   `title` varchar(200) NOT NULL,
   `content` text,
-  `amount` int NOT NULL DEFAULT '0',
-  `goal` int NOT NULL,
+  `amount` int unsigned NOT NULL DEFAULT '0',
+  `goal` int unsigned NOT NULL,
   `status` int NOT NULL,
   `viewed_num` int NOT NULL DEFAULT '0',
   `create_time` datetime NOT NULL,
   `due_time` text,
   `is_deactivated` tinyint NOT NULL,
-  PRIMARY KEY (`proposal_id`,`catecory_id`),
-  KEY `category_id_category_idx` (`catecory_id`),
-  CONSTRAINT `fk_category_id` FOREIGN KEY (`catecory_id`) REFERENCES `tblcategory` (`category_id`)
+  PRIMARY KEY (`proposal_id`,`category_id`),
+  KEY `category_id_category_idx` (`category_id`),
+  CONSTRAINT `fk_category_id` FOREIGN KEY (`category_id`) REFERENCES `tblcategory` (`category_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -61,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-06-14  3:17:55
+-- Dump completed on 2022-06-14 15:43:13
